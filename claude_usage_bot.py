@@ -4,6 +4,7 @@ Claude 사용량 제출 디스코드 봇
 - 초기화 12시간 전에 DM으로 제출 알림
 - 학생이 Settings > Usage의 주간 %를 제출 (/사용량, 스크린샷 선택)
 - 관리자가 현황 확인 (/현황)
+- 명령어 안내 (/도움말)
 
 설정: .env.example을 .env로 복사해서 값 채우기
 설치: pip install -r requirements.txt   (Python 3.10+)
@@ -149,6 +150,30 @@ async def overview(inter: discord.Interaction):
         prev = cur - dt.timedelta(days=7)
         lines.append(f"{m['name']} | {latest_percent(m['user_id'], prev)} | {latest_percent(m['user_id'], cur)}")
     await inter.response.send_message("```\n" + "\n".join(lines)[:1900] + "\n```", ephemeral=True)
+
+
+@tree.command(name="도움말", description="사용할 수 있는 명령어와 사용 방법 보기", guild=GUILD)
+async def help_cmd(inter: discord.Interaction):
+    hours = int(REMIND_BEFORE.total_seconds() // 3600)
+    e = discord.Embed(title="Usage Check Bot 도움말",
+                      description="claude.ai **Settings > Usage**의 주간 사용량(%)을 제출하는 봇이에요.",
+                      color=0xD97757)
+    e.add_field(name="/리셋시각 요일 시 [분]",
+                value="내 주간 한도가 초기화되는 요일·시각을 등록해요 (한국 시간). 처음 한 번만 하면 돼요.",
+                inline=False)
+    e.add_field(name="/사용량 주간퍼센트 [스크린샷]",
+                value="이번 주 사용량(%)을 제출해요. 스크린샷은 선택이에요.", inline=False)
+    e.add_field(name="/내기록", value="최근 8주 제출 기록을 확인해요.", inline=False)
+    e.add_field(name="/도움말", value="이 안내를 다시 보여줘요.", inline=False)
+    if inter.guild and inter.user.guild_permissions.manage_guild:
+        e.add_field(name="/현황 (관리자)",
+                    value="학생별 직전·현재 주기 제출값을 확인해요.", inline=False)
+    e.add_field(name="이용 순서",
+                value=(f"1. `/리셋시각`으로 초기화 시각 등록\n"
+                       f"2. 초기화 {hours}시간 전에 DM 알림이 오면 `/사용량`으로 제출\n"
+                       f"3. 알림을 받으려면 서버 멤버 DM을 허용해 주세요"),
+                inline=False)
+    await inter.response.send_message(embed=e, ephemeral=True)
 
 
 @tasks.loop(minutes=10)
