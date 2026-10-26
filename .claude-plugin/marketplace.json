@@ -1,0 +1,20 @@
+{
+  "name": "claude-session",
+  "owner": {
+    "name": "yeondon125",
+    "url": "https://github.com/yeondon125"
+  },
+  "metadata": {
+    "description": "Usage Check Bot용 Claude Code 플러그인",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "usage-check",
+      "source": "./plugin",
+      "description": "Claude Code 상태줄에서 주간 사용량(%)을 읽어 디스코드 Usage Check Bot에 자동으로 제출해요.",
+      "category": "monitoring",
+      "tags": ["usage", "statusline", "discord"]
+    }
+  ]
+}

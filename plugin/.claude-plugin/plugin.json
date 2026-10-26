@@ -1,0 +1,11 @@
+{
+  "name": "usage-check",
+  "description": "Claude Code 상태줄에서 주간 사용량(%)을 읽어 디스코드 Usage Check Bot에 자동으로 제출해요.",
+  "version": "0.1.0",
+  "author": {
+    "name": "yeondon125",
+    "url": "https://github.com/yeondon125"
+  },
+  "repository": "https://github.com/yeondon125/claude-session",
+  "keywords": ["usage", "statusline", "discord"]
+}
