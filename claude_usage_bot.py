@@ -31,7 +31,7 @@ TOKEN = os.environ["DISCORD_TOKEN"]
 GUILD = discord.Object(id=int(os.environ["GUILD_ID"]))
 LOG_CHANNEL_ID = int(os.environ.get("LOG_CHANNEL_ID", "0"))
 REMIND_BEFORE = dt.timedelta(hours=float(os.environ.get("REMIND_BEFORE_HOURS", "12")))  # 초기화 몇 시간 전에 알릴지
-HTTP_PORT = int(os.environ.get("HTTP_PORT", "8080"))  # 플러그인 자동 제출을 받는 포트
+HTTP_PORT = int(os.environ.get("HTTP_PORT", "8765"))  # 플러그인 자동 제출을 받는 포트
 PUBLIC_URL = os.environ.get("PUBLIC_URL", "").rstrip("/")  # 학생 PC에서 접속할 봇 주소
 PLUGIN_MARKETPLACE = "yeondon125/claude-session"  # 플러그인이 들어 있는 GitHub 저장소
 DB_PATH = "usage.db"
@@ -259,9 +259,10 @@ async def start_web():
     app = web.Application()
     app.router.add_post("/report", handle_report)
     app.router.add_post("/check", handle_check)
-    web_runner = web.AppRunner(app)
-    await web_runner.setup()
-    await web.TCPSite(web_runner, port=HTTP_PORT).start()
+    runner = web.AppRunner(app)
+    await runner.setup()
+    await web.TCPSite(runner, port=HTTP_PORT).start()
+    web_runner = runner  # 포트 열기에 실패하면 다음 on_ready에서 다시 시도
     print(f"자동 제출 수신 대기: 포트 {HTTP_PORT}")
 
 
